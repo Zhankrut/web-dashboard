@@ -6,6 +6,9 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Home } from './pages/Home.jsx'
 import PasswordManager from './pages/PasswordManager.jsx'
 import VulnerabilityScan from './pages/VulnerabilityScan.jsx'
+import HoneyPotMonitor from './pages/HoneyPotMonitor.jsx'
+import Profile from './pages/Profile.jsx'
+import Settings from './pages/Settings.jsx'
 
 const router = createBrowserRouter([
   {
@@ -23,6 +26,18 @@ const router = createBrowserRouter([
       {
         path:'/vulnerability-scan',
         element:<VulnerabilityScan/>
+      },
+      {
+        path:'/honeypot-monitor',
+        element:<HoneyPotMonitor/>
+      },
+      {
+        path:'/profile',
+        element: <Profile/>
+      },
+      {
+        path:'/settings',
+        element:<Settings/>
       }
       
     ]

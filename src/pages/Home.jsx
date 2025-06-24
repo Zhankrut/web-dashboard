@@ -3,7 +3,7 @@ import vulnerabilityScan from '../assets/Images/vulnerabilityScan.avif'
 
 export const Home = () => {
     return (
-        <div className="mx-10 flex flex-wrap gap-8">
+        <div className="mx-10 my-3 flex flex-wrap gap-8">
             <div className="relative group  h-80 bg-black overflow-hidden rounded-lg shadow-lg cursor-pointer transition-transform duration-300 hover:scale-105 outline-4">
                 <img
                     src={vulnerabilityScan}
