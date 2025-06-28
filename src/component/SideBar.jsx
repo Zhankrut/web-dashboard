@@ -11,7 +11,7 @@ function SideBar() {
       }}
     >
       <div className="py-3 text-2xl uppercase text-center tracking-widest border-b-2 border-gray-200">
-        <NavLink to="/" className="text-[#3e67c8] font-bold">Logo</NavLink>
+        <NavLink to="/" className="text-[#3e67c8] font-bold"><img src="src/assets/images/logo.png" alt="" /></NavLink>
       </div>
 
       <nav className="text-sm h-full text-[#3e67c8]">
