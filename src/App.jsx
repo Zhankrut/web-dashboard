@@ -1,8 +1,6 @@
-import { useState } from 'react'
-import { Home } from './pages/Home'
+import{ useState } from 'react'
 import SideBar from './component/SideBar'
 import { Outlet } from 'react-router-dom'
-
 
 function App() {
 
