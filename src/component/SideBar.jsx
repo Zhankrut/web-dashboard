@@ -10,9 +10,12 @@ function SideBar() {
         color: '#3e67c8'
       }}
     >
-      <div className="py-3 text-2xl uppercase text-center tracking-widest border-b-2 border-gray-200">
-        <NavLink to="/" className="text-[#3e67c8] font-bold"><img src="src/assets/images/logo.png" alt="" /></NavLink>
+      <div className="py-3 text-center border-b-2 border-gray-200">
+        <NavLink to="/">
+        <img src="src/assets/images/logo.png" alt="Logo" className="mx-auto h-auto w-20" />
+        </NavLink>
       </div>
+
 
       <nav className="text-sm h-full text-[#3e67c8]">
         <ul className="flex flex-col">

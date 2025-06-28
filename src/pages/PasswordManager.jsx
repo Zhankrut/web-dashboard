@@ -3,7 +3,7 @@ import React from 'react';
 function PasswordManager() {
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Password Manager</h1>
+      <h1 className="text-xl font-bold mb-4">KeyNest</h1>
       
       <nav className='bg-purple-200 p-2 rounded'>
         <ul className="space-x-4 flex">
