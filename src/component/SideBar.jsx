@@ -11,7 +11,7 @@ function SideBar() {
       <nav className="text-sm h-full text-gray-300">
         <ul className="flex flex-col">
           <li className="px-4 cursor-pointer hover:bg-gray-700  hover:text-white">
-            <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")} to="/">
+            <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to="/">
               <scan className="py-3 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" className="w-4 mr-3">
@@ -24,7 +24,7 @@ function SideBar() {
           </li>
           <li className="px-4 py-2 text-xs uppercase tracking-wider text-gray-500 font-bold">USER MANAGEMENT</li>
           <li className="px-4 cursor-pointer hover:bg-gray-700">
-            <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")} to="/vulnerability-scan">
+            <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to="/vulnerability-scan">
               <scan className='py-3 flex items-center'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" className="w-4 mr-3">
@@ -36,7 +36,7 @@ function SideBar() {
             </NavLink>
           </li>
           <li className="cursor-pointer hover:bg-gray-700">
-            <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")}  to='/honeypot-monitor'>
+            <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to='/honeypot-monitor'>
               <scan className='px-4 py-3 flex items-center'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" className="w-4 mr-3">
@@ -49,7 +49,7 @@ function SideBar() {
             </NavLink>
           </li>
           <li className="px-4 cursor-pointer hover:bg-gray-700">
-            <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")} to="/password-manager">
+            <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to="/password-manager">
               <scan className="py-3 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" className="w-4 mr-3">
@@ -68,7 +68,7 @@ function SideBar() {
         <div className=" py-3 text-sm text-center bg-gray-800 border-b-2 border-gray-800 text-gray-300">
           <ul className='flex flex-col'>
             <li className="px-4 cursor-pointer hover:bg-gray-700">
-              <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")} to="/profile">
+              <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to="/profile">
                 <scan className="py-3 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" className="w-4 mr-3">
@@ -80,7 +80,7 @@ function SideBar() {
               </NavLink>
             </li>
             <li className="px-4 cursor-pointer hover:bg-gray-700">
-              <NavLink className={({isActive}) => (isActive?"text-white font-bold": "")} to="/settings">
+              <NavLink className={({ isActive }) => (isActive ? "text-white font-bold" : "")} to="/settings">
                 <scan className="py-3 flex items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" className="w-4 mr-3">
