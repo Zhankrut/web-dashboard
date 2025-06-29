@@ -1,21 +1,26 @@
-import { useState } from 'react'
-import SideBar from './component/SideBar'
-import { Outlet } from 'react-router-dom'
+import SideBar from "./component/SideBar";
+import { Outlet } from "react-router-dom";
 
 function App() {
   return (
     <div
-      className="flex box-border min-h-screen"
+      className="flex min-h-screen"
       style={{
-        background: 'linear-gradient(to bottom, #e6f4ea 0%, #fce7f3 50%, #e6f4ea 100%)',
+        background:
+          "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
+        color: "#3e67c8",
       }}
     >
       <SideBar />
-      <div className="w-full mx-20 my-4">
-        <Outlet />
+
+      {/* Main Content Area */}
+      <div className="flex-1 p-4 overflow-hidden">
+        <div className="h-full w-full overflow-y-auto pr-2 ">
+          <Outlet />
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
