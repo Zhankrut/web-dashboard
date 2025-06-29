@@ -38,7 +38,11 @@ const router = createBrowserRouter([
       {
         path:'/settings',
         element:<Settings/>
-      }
+      },
+      // {
+      //   path: 'manager',
+      //   element: <Manager />,
+      // },
       
     ]
   }
