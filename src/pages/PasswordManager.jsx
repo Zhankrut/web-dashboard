@@ -22,7 +22,7 @@ function PasswordManager() {
   };
 
   const handleSavePassword = () => {
-    const updated = [...passwordArray, form];
+    const updated = [form, ...passwordArray]; // Newest on top
     setPasswordArray(updated);
     localStorage.setItem("passwords", JSON.stringify(updated));
     setForm({ site: "", username: "", password: "" });
@@ -64,14 +64,16 @@ function PasswordManager() {
 
   return (
     <div className="p-4 overflow-x-hidden w-full">
-      <h1 className="text-xl font-bold mb-4 text-[#3e67c8]">Password Manager</h1>
+      <h1 className="text-xl font-bold mb-4 text-[#3e67c8]">
+        Password Manager
+      </h1>
 
       {/* Navbar */}
       <nav
         className="mt-6 border border-gray-200 shadow-xl rounded-xl p-4"
         style={{
           background:
-            "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
+            "linear-gradient(to bottom, #d6f8df 0%, #d6f8df 100%)",
           color: "#3e67c8",
         }}
       >
@@ -119,7 +121,7 @@ function PasswordManager() {
             value={form.site}
             onChange={handleChange}
             className="w-full rounded-full border border-[#3e67c8] px-4 py-1 focus:outline-none focus:ring-2 focus:ring-sky-400"
-            placeholder="Enter Website or App"
+            placeholder="Enter Website URL"
           />
 
           <div className="flex gap-4 w-full">
@@ -164,17 +166,17 @@ function PasswordManager() {
         </div>
       </div>
 
-      {/* Passwords Table or Message */}
+      {/* Password Table or Message */}
       {passwordArray.length > 0 ? (
         <div
-          className="mt-6 border border-gray-200 shadow-lg rounded-xl p-4"
+          className="mt-6 border border-gray-200 shadow-lg rounded-xl overflow-hidden"
           style={{
             background:
               "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
             color: "#3e67c8",
           }}
         >
-          <h2 className="text-2xl font-bold mb-4 text-[#3e67c8] text-center">
+          <h2 className="text-2xl font-bold mb-4 text-[#3e67c8] text-center pt-4">
             Saved Passwords
           </h2>
 
@@ -241,9 +243,61 @@ function PasswordManager() {
                       />
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {passwordArray.map((item, index) => (
+                    <tr
+                      key={index}
+                      className="bg-white hover:shadow-md text-gray-800 overflow-hidden"
+                      style={{ borderRadius: "12px" }}
+                    >
+                      <td className="py-3 px-5 break-words text-blue-600 rounded-l-xl">
+                        <a
+                          href={
+                            item.site.startsWith("http")
+                              ? item.site
+                              : `https://${item.site}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:font-bold no-underline"
+                        >
+                          {item.site}
+                        </a>
+                      </td>
+                      <td className="py-3 px-5 break-words">{item.username}</td>
+                      <td className="py-3 px-5 break-all">
+                        {visibleIndexes.includes(index)
+                          ? item.password
+                          : "●●●●●●"}
+                      </td>
+                      <td className="py-3 px-5 flex items-center gap-2 justify-start rounded-r-xl pr-6">
+                        <img
+                          src={visibleIndexes.includes(index) ? eye : hidden}
+                          alt="toggle"
+                          className="w-5 h-5 cursor-pointer"
+                          onClick={() => toggleVisibility(index)}
+                        />
+                        <img
+                          src="/copy.png"
+                          alt="copy"
+                          className="w-6 h-6 cursor-pointer hover:scale-110 transition"
+                          title="Copy password"
+                          onClick={() => handleCopy(item.password)}
+                        />
+                        <img
+                          src="/trash-bin.png"
+                          alt="delete"
+                          className="w-6 h-6 cursor-pointer hover:scale-110 transition"
+                          title="Delete password"
+                          onClick={() => handleDelete(index)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       ) : (
@@ -253,7 +307,6 @@ function PasswordManager() {
           </p>
         </div>
       )}
-
       <ToastContainer />
     </div>
   );
