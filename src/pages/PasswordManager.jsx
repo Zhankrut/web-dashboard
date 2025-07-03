@@ -196,7 +196,7 @@ function PasswordManager() {
                 {passwordArray.map((item, index) => (
                   <tr
                     key={index}
-                    className="bg-white hover:shadow-md text-gray-800 rounded-xl"
+                    className="bg-white rounded-xl hover:shadow-md text-gray-800 "
                   >
                     <td className="py-3 px-5 rounded-l-xl break-words text-blue-600">
                       <a
@@ -218,7 +218,7 @@ function PasswordManager() {
                         ? item.password
                         : "●●●●●●"}
                     </td>
-                    <td className="py-3 px-5 pr-6 flex items-center gap-2 justify-start rounded-r-xl">
+                    <td className="py-3 px-5 border flex items-center gap-2 justify-start rounded-r-xl">
                       <img
                         src={visibleIndexes.includes(index) ? hidden : eye}
                         alt="toggle"
