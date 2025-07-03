@@ -243,63 +243,12 @@ function PasswordManager() {
                       />
                     </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {passwordArray.map((item, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white hover:shadow-md text-gray-800 overflow-hidden"
-                      style={{ borderRadius: "12px" }}
-                    >
-                      <td className="py-3 px-5 break-words text-blue-600 rounded-l-xl">
-                        <a
-                          href={
-                            item.site.startsWith("http")
-                              ? item.site
-                              : `https://${item.site}`
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:font-bold no-underline"
-                        >
-                          {item.site}
-                        </a>
-                      </td>
-                      <td className="py-3 px-5 break-words">{item.username}</td>
-                      <td className="py-3 px-5 break-all">
-                        {visibleIndexes.includes(index)
-                          ? item.password
-                          : "●●●●●●"}
-                      </td>
-                      <td className="py-3 px-5 flex items-center gap-2 justify-start rounded-r-xl pr-6">
-                        <img
-                          src={visibleIndexes.includes(index) ? eye : hidden}
-                          alt="toggle"
-                          className="w-5 h-5 cursor-pointer"
-                          onClick={() => toggleVisibility(index)}
-                        />
-                        <img
-                          src="/copy.png"
-                          alt="copy"
-                          className="w-6 h-6 cursor-pointer hover:scale-110 transition"
-                          title="Copy password"
-                          onClick={() => handleCopy(item.password)}
-                        />
-                        <img
-                          src="/trash-bin.png"
-                          alt="delete"
-                          className="w-6 h-6 cursor-pointer hover:scale-110 transition"
-                          title="Delete password"
-                          onClick={() => handleDelete(index)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
+                ))}
+                  
                 </tbody>
               </table>
             </div>
           </div>
-        </div>
       ) : (
         <div className="mt-6 flex justify-center">
           <p className="text-center bg-green-400 hover:bg-[#3e67c8] text-white font-semibold px-6 py-2 rounded-full">
