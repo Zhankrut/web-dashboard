@@ -180,22 +180,68 @@ function PasswordManager() {
             Saved Passwords
           </h2>
 
-          <div
-            className="overflow-y-auto max-h-[180px] rounded-b-xl"
-            style={{ scrollbarGutter: "stable" }}
-          >
-            <div className="px-4">
-              <table className="w-full table-fixed border-separate border-spacing-y-3">
-                <thead className="sticky top-0 bg-[#3e67c8] text-white z-10 rounded-t-xl">
-                  <tr>
-                    <th className="py-3 px-5 w-1/4 rounded-l-xl text-left">
-                      Website
-                    </th>
-                    <th className="py-3 px-5 w-1/4 text-left">Username</th>
-                    <th className="py-3 px-5 w-1/4 text-left">Password</th>
-                    <th className="py-3 px-5 w-1/4 rounded-r-xl text-left">
-                      Action
-                    </th>
+          <div className="overflow-y-auto max-h-[180px] rounded-xl pr-4">
+            <table className="w-full table-fixed border-separate border-spacing-y-3">
+              <thead className="sticky top-0 bg-[#3e67c8] text-white z-10">
+                <tr>
+                  <th className="py-3 px-5 w-1/4 rounded-l-xl text-left">
+                    Website
+                  </th>
+                  <th className="py-3 px-5 w-1/4 text-left">Username</th>
+                  <th className="py-3 px-5 w-1/4 text-left">Password</th>
+                  <th className="py-3 px-5 w-1/4 rounded-r-xl text-left">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {passwordArray.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="bg-white rounded-xl hover:shadow-md text-gray-800 "
+                  >
+                    <td className="py-3 px-5 rounded-l-xl break-words text-blue-600">
+                      <a
+                        href={
+                          item.site.startsWith("http")
+                            ? item.site
+                            : `https://${item.site}`
+                        }
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:font-bold no-underline"
+                      >
+                        {item.site}
+                      </a>
+                    </td>
+                    <td className="py-3 px-5 break-words">{item.username}</td>
+                    <td className="py-3 px-5 break-all">
+                      {visibleIndexes.includes(index)
+                        ? item.password
+                        : "●●●●●●"}
+                    </td>
+                    <td className="py-3 px-5 border flex items-center gap-2 justify-start rounded-r-xl">
+                      <img
+                        src={visibleIndexes.includes(index) ? hidden : eye}
+                        alt="toggle"
+                        className="w-5 h-5 cursor-pointer"
+                        onClick={() => toggleVisibility(index)}
+                      />
+                      <img
+                        src="/copy.png"
+                        alt="copy"
+                        className="w-6 h-6 cursor-pointer hover:scale-110 transition"
+                        title="Copy password"
+                        onClick={() => handleCopy(item.password)}
+                      />
+                      <img
+                        src="/trash-bin.png"
+                        alt="delete"
+                        className="w-6 h-6 cursor-pointer hover:scale-110 transition"
+                        title="Delete password"
+                        onClick={() => handleDelete(index)}
+                      />
+                    </td>
                   </tr>
                 </thead>
                 <tbody>

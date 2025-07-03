@@ -101,7 +101,6 @@ function SideBar() {
           </li>
         </ul>
       </nav>
-
       <div className="mt-auto">
         <div className="px-4 py-2 text-xs uppercase tracking-wider font-bold text-[#3e67c8]">
           Profile & Settings
@@ -122,6 +121,7 @@ function SideBar() {
                 </span>
               </NavLink>
             </li>
+
             <li className="px-4 cursor-pointer hover:bg-gray-100">
               <NavLink
                 className={({ isActive }) =>

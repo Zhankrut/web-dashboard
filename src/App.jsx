@@ -1,8 +1,11 @@
 import SideBar from "./component/SideBar";
 import { Outlet } from "react-router-dom";
 
+// Load environment variables from .env file
+
 function App() {
   return (
+
     <div
       className="flex min-h-screen"
       style={{
