@@ -7,7 +7,7 @@ function App() {
   return (
 
     <div
-      className="flex min-h-screen"
+      className="flex max-h-screen"
       style={{
         background:
           "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
