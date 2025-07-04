@@ -64,16 +64,13 @@ function PasswordManager() {
 
   return (
     <div className="p-4 overflow-x-hidden w-full">
-      <h1 className="text-xl font-bold mb-4 text-[#3e67c8]">
-        Password Manager
-      </h1>
+      <h1 className="text-xl font-bold mb-4 text-[#3e67c8]">Password Manager</h1>
 
       {/* Navbar */}
       <nav
         className="mt-6 border border-gray-200 shadow-xl rounded-xl p-4"
         style={{
-          background:
-            "linear-gradient(to bottom, #d6f8df 0%, #d6f8df 100%)",
+          background: "linear-gradient(to bottom, #d6f8df 0%, #d6f8df 100%)",
           color: "#3e67c8",
         }}
       >
@@ -96,12 +93,11 @@ function PasswordManager() {
         </ul>
       </nav>
 
-      {/* Form Section */}
+      {/* Form */}
       <div
         className="mt-6 border border-gray-200 shadow-lg rounded-xl p-4"
         style={{
-          background:
-            "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
+          background: "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
           color: "#3e67c8",
         }}
       >
@@ -166,47 +162,35 @@ function PasswordManager() {
         </div>
       </div>
 
-      {/* Password Table or Message */}
+      {/* Password List */}
       {passwordArray.length > 0 ? (
         <div
-          className="mt-6 border border-gray-200 shadow-lg rounded-xl overflow-hidden"
+          className="mt-6 border border-gray-200 shadow-lg rounded-xl overflow-hidden p-4"
           style={{
-            background:
-              "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
+            background: "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
             color: "#3e67c8",
           }}
         >
-          <h2 className="text-2xl font-bold mb-4 text-[#3e67c8] text-center pt-4">
+          <h2 className="text-2xl font-bold mb-4 text-[#3e67c8] text-center pt-2">
             Saved Passwords
           </h2>
 
-          <div className="overflow-y-auto max-h-[180px] rounded-xl pr-4">
+          <div className="overflow-y-auto max-h-[180px] rounded-xl pr-2">
             <table className="w-full table-fixed border-separate border-spacing-y-3">
               <thead className="sticky top-0 bg-[#3e67c8] text-white z-10">
                 <tr>
-                  <th className="py-3 px-5 w-1/4 rounded-l-xl text-left">
-                    Website
-                  </th>
+                  <th className="py-3 px-5 w-1/4 rounded-l-xl text-left">Website</th>
                   <th className="py-3 px-5 w-1/4 text-left">Username</th>
                   <th className="py-3 px-5 w-1/4 text-left">Password</th>
-                  <th className="py-3 px-5 w-1/4 rounded-r-xl text-left">
-                    Action
-                  </th>
+                  <th className="py-3 px-5 w-1/4 rounded-r-xl text-left">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {passwordArray.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="bg-white rounded-xl hover:shadow-md text-gray-800 "
-                  >
+                  <tr key={index} className="bg-white hover:shadow-md text-gray-800">
                     <td className="py-3 px-5 rounded-l-xl break-words text-blue-600">
                       <a
-                        href={
-                          item.site.startsWith("http")
-                            ? item.site
-                            : `https://${item.site}`
-                        }
+                        href={item.site.startsWith("http") ? item.site : `https://${item.site}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:font-bold no-underline"
@@ -216,11 +200,9 @@ function PasswordManager() {
                     </td>
                     <td className="py-3 px-5 break-words">{item.username}</td>
                     <td className="py-3 px-5 break-all">
-                      {visibleIndexes.includes(index)
-                        ? item.password
-                        : "●●●●●●"}
+                      {visibleIndexes.includes(index) ? item.password : "●●●●●●"}
                     </td>
-                    <td className="py-3 px-5 border flex items-center gap-2 justify-start rounded-r-xl">
+                    <td className="py-3 px-5 flex items-center gap-2 justify-start rounded-r-xl">
                       <img
                         src={visibleIndexes.includes(index) ? hidden : eye}
                         alt="toggle"
@@ -244,11 +226,10 @@ function PasswordManager() {
                     </td>
                   </tr>
                 ))}
-                  
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
           </div>
+        </div>
       ) : (
         <div className="mt-6 flex justify-center">
           <p className="text-center bg-green-400 hover:bg-[#3e67c8] text-white font-semibold px-6 py-2 rounded-full">
@@ -256,6 +237,7 @@ function PasswordManager() {
           </p>
         </div>
       )}
+
       <ToastContainer />
     </div>
   );
