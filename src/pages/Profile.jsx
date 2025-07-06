@@ -1,9 +1,8 @@
-import { useUser } from '@clerk/clerk-react';
-import SignInPage from '../component/CustomSignIn';
-import SignUpPage from '../component/CustomSignUp';
-import { UserProfile } from '@clerk/clerk-react'
-import { SignOutButton } from '@clerk/clerk-react'
-import { useState } from 'react';
+import { useState } from "react";
+import { useUser, } from "@clerk/clerk-react";
+import Signin from "../component/SignIn";
+import Signup from "../component/SignUp";
+import CustomUserProfile from "../component/CustomUserProfile";
 
 const Profile = () => {
     const { isSignedIn, isLoaded, user } = useUser();
@@ -11,30 +10,48 @@ const Profile = () => {
 
     if (!isLoaded) return <div>Loading...</div>;
 
-    if (!isSignedIn) {
+    if (isSignedIn && user) {
         return (
-            <div className="h-screen flex flex-col justify-center items-center">
-                {showSignUp ? <SignUpPage /> : <SignInPage />}
-                <button
-                    onClick={() => setShowSignUp(!showSignUp)}
-                    className="mt-4 text-white bg-blue-600 px-4 py-2 rounded hover:bg-blue-700"
-                >
-                    {showSignUp
-                        ? 'Already have an account? Sign In'
-                        : 'Don’t have an account? Sign Up'}
-                </button>
+            <div className="flex items-center justify-center min-h-[60vh] p-6">
+                <div className="mx-auto text-center">
+                    <h1 className="text-2xl font-bold mb-2">
+                        Welcome, {user.fullName || user.emailAddresses[0]?.emailAddress}
+                    </h1>
+                    <CustomUserProfile />
+                </div>
             </div>
-        );
+        )
     }
 
+
     return (
-        <div className="p-4 flex justify-center items-center ">
-            <div>
-                <UserProfile />
+        <div className="p-6 max-w-md mx-auto">
+            {showSignUp ? <Signup /> : <Signin />}
+            <div className="mt-4 text-center">
+                {showSignUp ? (
+                    <p>
+                        Already have an account?{" "}
+                        <button className="text-blue-600" onClick={() => setShowSignUp(false)}>
+                            Sign In
+                        </button>
+                    </p>
+                ) : (
+                    <p>
+                        Don’t have an account?{" "}
+                        <button className="text-blue-600" onClick={() => setShowSignUp(true)}>
+                            Sign Up
+                        </button>
+                    </p>
+                )}
             </div>
         </div>
-
     );
 };
 
 export default Profile;
+
+
+
+
+
+
