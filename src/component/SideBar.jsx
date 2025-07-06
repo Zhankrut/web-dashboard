@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 function SideBar() {
   return (
     <aside
-      className="flex flex-col justify-between w-80 min-h-screen border border-gray-200 z-10 shadow-lg"
+      className="flex flex-col justify-between md:w-80 lg:w-80 w-64 min-h-screen border border-gray-200 z-10 shadow-lg"
       style={{
         background:
           "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
