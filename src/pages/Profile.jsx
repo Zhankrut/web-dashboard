@@ -5,7 +5,7 @@ import Signup from "../component/SignUp";
 import CustomUserProfile from "../component/CustomUserProfile";
 
 const Profile = () => {
-    const { isSignedIn, isLoaded } = useUser();
+    const { isSignedIn, isLoaded, user } = useUser();
     const [showSignUp, setShowSignUp] = useState(false);
 
     if (!isLoaded) return <div>Loading...</div>;
