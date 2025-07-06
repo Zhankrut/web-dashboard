@@ -6,7 +6,7 @@ import { SignOutButton } from '@clerk/clerk-react'
 import { useState } from 'react';
 
 const Profile = () => {
-    const { isSignedIn, isLoaded, user } = useUser();
+    const { isSignedIn, isLoaded } = useUser();
     const [showSignUp, setShowSignUp] = useState(false);
 
     if (!isLoaded) return <div>Loading...</div>;
