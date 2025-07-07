@@ -1,11 +1,24 @@
 import SideBar from "./component/SideBar";
-import { Outlet } from "react-router-dom";
-
-// Load environment variables from .env file
+import { Outlet, useLocation } from "react-router-dom";
+import { useUser } from "@clerk/clerk-react";
 
 function App() {
-  return (
+  const { isSignedIn } = useUser();
+  const location = useLocation();
 
+  const isAuthPage =
+    location.pathname === "/login" || location.pathname === "/signup";
+
+  // Show only login/signup page when not signed in
+  if (!isSignedIn || isAuthPage) {
+    return (
+      <div className="min-h-screen">
+        <Outlet />
+      </div>
+    );
+  }
+
+  return (
     <div
       className="flex max-h-screen"
       style={{
@@ -15,10 +28,8 @@ function App() {
       }}
     >
       <SideBar />
-
-      {/* Main Content Area */}
       <div className="flex-1 p-4 overflow-hidden">
-        <div className="h-full w-full overflow-y-auto pr-2 ">
+        <div className="h-full w-full overflow-y-auto pr-2">
           <Outlet />
         </div>
       </div>
