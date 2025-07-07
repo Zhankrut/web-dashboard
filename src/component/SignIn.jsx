@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSignIn } from "@clerk/clerk-react";
-import SigninForm from "./SigninForm";
+import SigninForm from "./SignInForm";
 
 const Signin = () => {
     const { isLoaded, signIn, setActive } = useSignIn();

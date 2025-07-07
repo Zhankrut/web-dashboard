@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { Home } from './pages/Home.jsx'
 import PasswordManager from './pages/PasswordManager.jsx'
 import VulnerabilityScan from './pages/VulnerabilityScan.jsx'
-import HoneyPotMonitor from './pages/HoneyPotMonitor.jsx'
+import HoneyDashboard from './pages/HoneyPotMonitor.jsx'
 import Profile from './pages/Profile.jsx'
 import Settings from './pages/Settings.jsx'
 import { ClerkProvider } from '@clerk/clerk-react'
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/honeypot-monitor',
-        element: <ProtectedRoute> <HoneyPotMonitor /></ProtectedRoute>
+        element: <ProtectedRoute> <HoneyDashboard /></ProtectedRoute>
       },
       {
         path: '/profile',
