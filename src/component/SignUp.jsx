@@ -13,13 +13,13 @@ const Signup = () => {
 
     const signUpWithEmail = async ({ emailAddress, password }) => {
         if (!isLoaded) return;
-
+        console.log(emailAddress, password);
         try {
-            await signUp.create({
+            const result = await signUp.create({
                 emailAddress,
                 password,
             });
-
+            console.log(result);
             await signUp.prepareEmailAddressVerification({
                 strategy: "email_code",
             });
@@ -27,6 +27,7 @@ const Signup = () => {
             setVerifying(true);
         } catch (err) {
             setClerkError(err?.errors?.[0]?.message || "Something went wrong");
+            console.log(err);
         }
     };
 
