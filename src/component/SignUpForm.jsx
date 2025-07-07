@@ -1,6 +1,7 @@
 import React from "react";
 import { motion as Motion } from "framer-motion";
 
+
 const SignupForm = ({ signUpWithEmail, clerkError }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -64,6 +65,7 @@ const SignupForm = ({ signUpWithEmail, clerkError }) => {
             </Motion.div>
         </Motion.div>
     );
+
 };
 
 export default SignupForm;
