@@ -11,9 +11,9 @@ import Profile from "./pages/Profile.jsx";
 import Settings from "./pages/Settings.jsx";
 import { ClerkProvider } from "@clerk/clerk-react";
 import ProtectedRoute from "./component/protectedRoute.jsx";
-import SigninForm from "./component/SignInForm.jsx"; // ✅ Correct casing
-import SignupForm from "./component/SignUpForm.jsx";
-//import NotFoundPage from "./pages/NotFoundPage.jsx";
+
+import Signin from "./component/SignIn.jsx";
+import Signup from "./component/SignUp.jsx";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -60,7 +60,13 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element: <Profile />,
+
+        element: (
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )
+
       },
       {
         path: "settings",
@@ -69,19 +75,17 @@ const router = createBrowserRouter([
             <Settings />
           </ProtectedRoute>
         ),
+
       },
       {
         path: "login",
-        element: <SigninForm />, // ✅ Match file name exactly
+        element: <Signin />,
       },
       {
         path: "signup",
-        element: <SignupForm />,
+        element: <Signup />,
       },
-      // {
-      //   path: "*",
-      //   element: <NotFoundPage />,
-      // },
+
     ],
   },
 ]);

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
 import Signin from "../component/SignIn";
 import Signup from "../component/SignUp";
 import CustomUserProfile from "../component/CustomUserProfile";
