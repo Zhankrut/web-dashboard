@@ -1,48 +1,74 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { motion as Motion } from "framer-motion";
 
-const SignupForm = ({ signUpWithEmail, clerkError }) => {
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const email = e.target.email.value;
-        const password = e.target.password.value;
-        signUpWithEmail({ emailAddress: email, password });
-    };
+const SignupForm = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Handle signup logic here
+  };
 
-    return (
-        <div className="justify-center mt-12 grid justify-items-center md:mt-20">
-            <div className="h-auto bg-blue-700 rounded-xl md:rounded-3xl w-80 md:w-96">
-                <div className="p-6 md:p-8">
-                    <h1 className="mb-6 text-3xl font-light text-white">Sign Up</h1>
-                    <form onSubmit={handleSubmit}>
-                        <input
-                            name="email"
-                            className="block w-full pb-4 pl-4 mb-3 text-sm font-light bg-transparent border-0 border-b-2 h-37 border-slate-600 text-white caret-slate-700 focus:border-white"
-                            placeholder="Email address"
-                            type="email"
-                            required
-                        />
-                        <input
-                            name="password"
-                            className="block w-full pb-4 pl-4 mb-3 text-sm font-light bg-transparent border-0 border-b-2 h-37 border-slate-600 text-white caret-slate-700 focus:border-white"
-                            placeholder="Password"
-                            type="password"
-                            required
-                        />
-                        {clerkError && (
-                            <p className="text-red mb-8">{clerkError}</p>
-                        )}
-                        <button
-                            className="w-full h-12 mb-6 text-sm font-light text-white hover:text-blue-900 hover:bg-white bg-slate-700 rounded-md"
-                            type="submit"
-                        >
-                            Create an account
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <Motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-pink-100 to-purple-300"
+    >
+      <Motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white rounded-3xl shadow-xl p-10 w-[90%] max-w-md"
+      >
+        <h2 className="text-3xl font-bold text-center text-purple-600 mb-6">
+          Create Your Account
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-gray-700 mb-1">Full Name</label>
+            <input
+              name="name"
+              type="text"
+              required
+              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 mb-1">Email</label>
+            <input
+              name="email"
+              type="email"
+              required
+              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-700 mb-1">Password</label>
+            <input
+              name="password"
+              type="password"
+              required
+              className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            />
+          </div>
+          <Motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            type="submit"
+            className="w-full py-3 bg-purple-500 text-white rounded-md font-semibold hover:bg-purple-600 transition"
+          >
+            Sign Up
+          </Motion.button>
+        </form>
+        <p className="text-center text-sm text-gray-600 mt-4">
+          Already have an account?{" "}
+          <a href="/login" className="text-purple-500 hover:underline">
+            Log in
+          </a>
+        </p>
+      </Motion.div>
+    </Motion.div>
+  );
 };
 
 export default SignupForm;
