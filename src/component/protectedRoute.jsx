@@ -5,11 +5,7 @@ import { Navigate } from 'react-router-dom';
 export default function ProtectedRoute({ children }) {
   const { isSignedIn, isLoaded } = useUser();
 
-  if (!isLoaded) return null; // Or a loading spinner
+  if (!isLoaded) return null; // You can show a spinner instead
 
-  if (!isSignedIn) {
-    return <Navigate to="/profile" replace />;
-  }
-
-  return children;
+  return isSignedIn ? children : <Navigate to="/login" replace />;
 }

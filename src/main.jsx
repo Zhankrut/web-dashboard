@@ -11,6 +11,7 @@ import Profile from "./pages/Profile.jsx";
 import Settings from "./pages/Settings.jsx";
 import { ClerkProvider } from "@clerk/clerk-react";
 import ProtectedRoute from "./component/protectedRoute.jsx";
+
 import Signin from "./component/SignIn.jsx";
 import Signup from "./component/SignUp.jsx";
 
@@ -65,6 +66,7 @@ const router = createBrowserRouter([
             <Profile />
           </ProtectedRoute>
         )
+
       },
       {
         path: "settings",
@@ -73,6 +75,7 @@ const router = createBrowserRouter([
             <Settings />
           </ProtectedRoute>
         ),
+
       },
       {
         path: "login",
@@ -82,6 +85,7 @@ const router = createBrowserRouter([
         path: "signup",
         element: <Signup />,
       },
+
     ],
   },
 ]);
