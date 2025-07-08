@@ -1,11 +1,9 @@
-// src/components/ProtectedRoute.jsx
-import { useUser } from '@clerk/clerk-react';
-import { Navigate } from 'react-router-dom';
+// src/component/ProtectedRoute.jsx
+import React from "react";
+import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children }) {
-  const { isSignedIn, isLoaded } = useUser();
+  const auth = localStorage.getItem("auth");
 
-  if (!isLoaded) return null; // You can show a spinner instead
-
-  return isSignedIn ? children : <Navigate to="/login" replace />;
+  return auth ? children : <Navigate to="/login" replace />;
 }

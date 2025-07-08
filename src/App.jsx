@@ -1,16 +1,11 @@
 import SideBar from "./component/SideBar";
 import { Outlet, useLocation } from "react-router-dom";
-import { useUser } from "@clerk/clerk-react";
 
 function App() {
-  const { isSignedIn } = useUser();
   const location = useLocation();
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/signup";
 
-  const isAuthPage =
-    location.pathname === "/login" || location.pathname === "/signup";
-
-  // Show only login/signup page when not signed in
-  if (!isSignedIn || isAuthPage) {
+  if (isAuthPage) {
     return (
       <div className="min-h-screen">
         <Outlet />
@@ -22,8 +17,7 @@ function App() {
     <div
       className="flex max-h-screen"
       style={{
-        background:
-          "linear-gradient(to bottom, #d6f8df 0%, #ffd6e8 40%, #d6f8df 100%)",
+        background: "linear-gradient( #fce7f3 0%, #e0f2fe 50%, #e0f2fe 100%)",
         color: "#3e67c8",
       }}
     >
