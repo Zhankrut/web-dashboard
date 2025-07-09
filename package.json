@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.32.4",
     "@tailwindcss/vite": "^4.1.10",
+    "axios": "^1.10.0",
     "chart.js": "^4.5.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
