@@ -1,4 +1,5 @@
 import SideBar from "./component/SideBar";
+//import { ScanProvider } from "./context/ScanContext";
 import { Outlet, useLocation } from "react-router-dom";
 
 function App() {
