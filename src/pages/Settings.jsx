@@ -1,8 +1,11 @@
+
 import React, { useEffect, useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 function Settings() {
   const navigate = useNavigate();
+
   const [auth, setAuth] = useState(null);
   const [user, setUser] = useState(null);
   const [is2FAEnabled, setIs2FAEnabled] = useState(false);
@@ -18,6 +21,7 @@ function Settings() {
       setIs2FAEnabled(storedAuth.is2FAEnabled || false);
     }
   }, [navigate]);
+
 
   const handleSignOut = () => {
     localStorage.removeItem("auth");
@@ -118,6 +122,7 @@ function Settings() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
