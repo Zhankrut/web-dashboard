@@ -41,9 +41,31 @@ const Profile = () => {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const saveChanges = () => {
-    const updatedUser = { ...user, ...form, avatar };
-    localStorage.setItem(`user:${auth.email}`, JSON.stringify(updatedUser));
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // prevent default page reload
+
+    const updatedUser = {
+      ...user,
+      ...form,
+      avatar,
+      updatedAt: new Date().toISOString(),
+    };
+
+    localStorage.setItem(`user:${form.email}`, JSON.stringify(updatedUser));
+    if (form.email !== user.email) {
+      localStorage.removeItem(`user:${user.email}`);
+    }
+
+    const updatedAuth = {
+      ...auth,
+      email: form.email,
+      password: form.password,
+      passwordChanged: new Date().toISOString(),
+    };
+
+    localStorage.setItem("auth", JSON.stringify(updatedAuth));
+
     setUser(updatedUser);
     setIsEditing(false);
   };
@@ -52,9 +74,9 @@ const Profile = () => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatar(reader.result);
-    };
+
+    reader.onloadend = () => setAvatar(reader.result);
+
     reader.readAsDataURL(file);
   };
 
@@ -75,7 +97,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen p-6 ">
+
+    <div className="min-h-screen p-6">
+
       <div
         className="mt-6 border border-gray-200 shadow-lg rounded-xl p-6 max-w-4xl mx-auto"
         style={{
@@ -101,35 +125,46 @@ const Profile = () => {
           </div>
           <div className="flex-1 space-y-2">
             {isEditing ? (
-              <>
+
+              <form onSubmit={handleSubmit} autoComplete="on">
+
                 <input
                   name="name"
                   value={form.name}
                   onChange={handleChange}
-                  className="block w-full px-3 py-2 border rounded"
+
+                  className="block w-full px-3 py-2 border rounded mb-2"
                   placeholder="Name"
+                  autoComplete="name"
+
                 />
                 <input
                   name="email"
                   value={form.email}
                   onChange={handleChange}
-                  className="block w-full px-3 py-2 border rounded"
+
+                  className="block w-full px-3 py-2 border rounded mb-2"
                   placeholder="Email"
+                  autoComplete="email"
+
                 />
                 <input
                   name="password"
                   value={form.password}
                   onChange={handleChange}
                   type="password"
-                  className="block w-full px-3 py-2 border rounded"
+
+                  className="block w-full px-3 py-2 border rounded mb-2"
                   placeholder="Password"
+                  autoComplete="new-password"
                 />
-                <p>Password strength: {getPasswordStrength(form.password)}</p>
+                <p className="mb-2">Password strength: {getPasswordStrength(form.password)}</p>
                 <div className="flex gap-2">
-                  <button onClick={saveChanges} className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Save</button>
-                  <button onClick={() => setIsEditing(false)} className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500">Cancel</button>
+                  <button type="submit" className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">Save</button>
+                  <button type="button" onClick={() => setIsEditing(false)} className="bg-gray-400 text-white px-3 py-1 rounded hover:bg-gray-500">Cancel</button>
                 </div>
-              </>
+              </form>
+
             ) : (
               <>
                 <p><strong>Name:</strong> {user?.name}</p>
@@ -203,4 +238,7 @@ const Profile = () => {
   );
 };
 
+
 export default Profile;
+
+
