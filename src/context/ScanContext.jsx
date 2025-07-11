@@ -1,4 +1,6 @@
+// scanContext.jsx
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
+import { BASE_URL, API_KEY, isValidUrl } from "../utils/zapApi";
 
 const ScanContext = createContext();
 
@@ -17,18 +19,6 @@ export function ScanProvider({ children }) {
 
   const pollingRef = useRef(true);
 
-  const API_KEY = import.meta.env.VITE_ZAP_API_KEY;
-  const BASE_URL = "/zap";
-
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch {
-      return false;
-    }
-  };
-
   const startScan = async () => {
     if (!isValidUrl(targetUrl)) {
       setScanStatus("Please enter a valid URL including http/https.");
@@ -42,15 +32,11 @@ export function ScanProvider({ children }) {
     pollingRef.current = true;
 
     try {
-      const spiderResp = await fetch(
-        `${BASE_URL}/spider/action/scan/?url=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
-      );
+      const spiderResp = await fetch(`${BASE_URL}/spider/action/scan/?url=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
       const spiderData = await spiderResp.json();
       await pollSpiderStatus(spiderData.scan);
 
-      const activeResp = await fetch(
-        `${BASE_URL}/ascan/action/scan/?url=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
-      );
+      const activeResp = await fetch(`${BASE_URL}/ascan/action/scan/?url=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
       const activeData = await activeResp.json();
 
       if (activeData.scan) {
@@ -73,7 +59,6 @@ export function ScanProvider({ children }) {
     try {
       await fetch(`${BASE_URL}/ascan/action/stop/?apikey=${API_KEY}`);
       await fetch(`${BASE_URL}/spider/action/stop/?apikey=${API_KEY}`);
-
       await fetchAlerts();
       const msgs = await fetchSentMessages();
       setSentMessages(msgs);
@@ -85,7 +70,7 @@ export function ScanProvider({ children }) {
   const pollSpiderStatus = async (scanId) => {
     let status = "0";
     while (status !== "100" && pollingRef.current) {
-      await new Promise((res) => setTimeout(res, 500));
+      await delay(500);
       const resp = await fetch(`${BASE_URL}/spider/view/status/?scanId=${scanId}&apikey=${API_KEY}`);
       status = (await resp.json()).status;
     }
@@ -95,7 +80,7 @@ export function ScanProvider({ children }) {
     let status = "0";
 
     while (status !== "100" && pollingRef.current) {
-      await new Promise((res) => setTimeout(res, 1000));
+      await delay(1000);
       const resp = await fetch(`${BASE_URL}/ascan/view/status/?scanId=${scanId}&apikey=${API_KEY}`);
       status = (await resp.json()).status;
       setScanProgress(Number(status));
@@ -116,9 +101,7 @@ export function ScanProvider({ children }) {
 
   const fetchAlerts = async () => {
     try {
-      const resp = await fetch(
-        `${BASE_URL}/core/view/alerts/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
-      );
+      const resp = await fetch(`${BASE_URL}/core/view/alerts/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
       const data = await resp.json();
       setAlerts(data.alerts || []);
       setScanStatus(`Found ${data.alerts?.length || 0} alerts.`);
@@ -133,8 +116,7 @@ export function ScanProvider({ children }) {
     try {
       const response = await fetch(`${BASE_URL}/ascan/view/scanners/?apikey=${API_KEY}`);
       const json = await response.json();
-      const scanners = json.scanners || [];
-      return scanners.map((scanner) => ({
+      return (json.scanners || []).map((scanner) => ({
         id: scanner.id,
         name: scanner.name,
         strength: scanner.attackStrength || "-",
@@ -151,34 +133,30 @@ export function ScanProvider({ children }) {
 
   const fetchSentMessages = async () => {
     try {
-      const resp = await fetch(
-        `${BASE_URL}/core/view/messages/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
-      );
+      const resp = await fetch(`${BASE_URL}/core/view/messages/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
       const data = await resp.json();
       const messages = data.messages || [];
-      const detailedMessages = await Promise.all(
-        messages.map(async (msg) => {
-          try {
-            const msgResp = await fetch(`${BASE_URL}/core/view/message/?id=${msg.id}&apikey=${API_KEY}`);
-            const msgData = await msgResp.json();
-            return {
-              id: msg.id,
-              timeSent: msgData.message.timeSent,
-              timeReceived: msgData.message.timeReceived,
-              method: msgData.message.requestHeader?.split(" ")[0] || "-",
-              url: msgData.message.requestHeader?.split(" ")[1] || "-",
-              statusCode: msgData.message.responseHeader?.match(/HTTP\/\d\.\d (\d{3})/)?.[1] || "-",
-              reasonPhrase: msgData.message.responseHeader?.match(/HTTP\/\d\.\d \d{3} (.+)/)?.[1] || "-",
-              rtt: msgData.message.rtt,
-              responseHeader: msgData.message.responseHeader,
-              responseBody: msgData.message.responseBody,
-            };
-          } catch {
-            return { id: msg.id };
-          }
-        })
-      );
-      return detailedMessages;
+
+      return await Promise.all(messages.map(async (msg) => {
+        try {
+          const msgResp = await fetch(`${BASE_URL}/core/view/message/?id=${msg.id}&apikey=${API_KEY}`);
+          const msgData = await msgResp.json();
+          return {
+            id: msg.id,
+            timeSent: msgData.message.timeSent,
+            timeReceived: msgData.message.timeReceived,
+            method: msgData.message.requestHeader?.split(" ")[0] || "-",
+            url: msgData.message.requestHeader?.split(" ")[1] || "-",
+            statusCode: msgData.message.responseHeader?.match(/HTTP\/\d\.\d (\d{3})/)?.[1] || "-",
+            reasonPhrase: msgData.message.responseHeader?.match(/HTTP\/\d\.\d \d{3} (.+)/)?.[1] || "-",
+            rtt: msgData.message.rtt,
+            responseHeader: msgData.message.responseHeader,
+            responseBody: msgData.message.responseBody,
+          };
+        } catch {
+          return { id: msg.id };
+        }
+      }));
     } catch {
       return [];
     }
@@ -193,6 +171,8 @@ export function ScanProvider({ children }) {
     const remSeconds = (seconds % 60).toFixed(3).padStart(6, "0");
     return `00:${String(minutes).padStart(2, "0")}:${remSeconds}`;
   };
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   useEffect(() => {
     return () => {
