@@ -4,6 +4,7 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { ScanProvider } from "./context/ScanContext"; // ✅ Import the context provider
 
 import { Home } from "./pages/Home.jsx";
 import PasswordManager from "./pages/PasswordManager.jsx";
@@ -12,7 +13,7 @@ import HoneyPotMonitor from "./pages/HoneyPotMonitor.jsx";
 import Profile from "./pages/Profile.jsx";
 import Settings from "./pages/Settings.jsx";
 
-import AuthPage from "./component/AuthPage"; // Unified login/signup
+import AuthPage from "./component/AuthPage";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ScanProvider> {/* ✅ Wrap everything in ScanProvider */}
+      <RouterProvider router={router} />
+    </ScanProvider>
   </StrictMode>
 );

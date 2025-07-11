@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 const HoneyDashboard = () => {
     const [attacks, setAttacks] = useState([]);
     const [badHost, setBadHost] = useState([]);
-    const [error, setError] = useState('');
+    const [ setError] = useState('');
 
     useEffect(() => {
         fetch('http://localhost:5000/api/attacks')
