@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EyeIcon from "../assets/images/eye.png";
 import HiddenIcon from "../assets/images/hidden.png";
@@ -122,9 +122,8 @@ const AuthPage = () => {
       >
         {/* Sign In Form */}
         <div
-          className={`absolute top-0 left-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center text-[#3e67c8] z-10 transition-all duration-700 ease-in-out ${
-            isSigningIn ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`absolute top-0 left-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center text-[#3e67c8] z-10 transition-all duration-700 ease-in-out ${isSigningIn ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <h2 className="text-3xl font-bold mb-4">Sign in</h2>
           <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -172,9 +171,8 @@ const AuthPage = () => {
 
         {/* Sign Up Form */}
         <div
-          className={`absolute top-0 right-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center text-[#3e67c8] z-10 transition-all duration-700 ease-in-out ${
-            isSigningIn ? "translate-x-full" : "translate-x-0"
-          }`}
+          className={`absolute top-0 right-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center text-[#3e67c8] z-10 transition-all duration-700 ease-in-out ${isSigningIn ? "translate-x-full" : "translate-x-0"
+            }`}
         >
           <h2 className="text-3xl font-bold mb-4">Create Account</h2>
           <form
@@ -251,9 +249,8 @@ const AuthPage = () => {
 
         {/* Right Panel */}
         <div
-          className={`absolute top-0 right-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center items-center text-white bg-gradient-to-r from-[#3e67c8] to-sky-400 z-20 transition-all duration-700 ease-in-out ${
-            isSigningIn ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`absolute top-0 right-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center items-center text-white bg-gradient-to-r from-[#3e67c8] to-sky-400 z-20 transition-all duration-700 ease-in-out ${isSigningIn ? "translate-x-0" : "translate-x-full"
+            }`}
         >
           <h2 className="text-2xl font-bold mb-4">Hello, Friend!</h2>
           <p className="mb-4 text-center">
@@ -281,9 +278,8 @@ const AuthPage = () => {
 
         {/* Left Panel */}
         <div
-          className={`absolute top-0 left-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center items-center text-white bg-gradient-to-l from-[#3e67c8] to-sky-400 z-20 transition-all duration-700 ease-in-out ${
-            isSigningIn ? "-translate-x-full" : "translate-x-0"
-          }`}
+          className={`absolute top-0 left-0 w-1/2 h-full px-12 py-10 flex flex-col justify-center items-center text-white bg-gradient-to-l from-[#3e67c8] to-sky-400 z-20 transition-all duration-700 ease-in-out ${isSigningIn ? "-translate-x-full" : "translate-x-0"
+            }`}
         >
           <h2 className="text-2xl font-bold mb-4">Welcome Back!</h2>
           <p className="mb-4 text-center">

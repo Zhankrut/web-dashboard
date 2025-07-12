@@ -1,66 +1,202 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from "react";
+import {
+    fetchIpHistory,
+    fetchAttacks,
+    fetchBadHosts,
+} from "../api/honeydbApi";
+import {
+    submitUrl,
+    getUrlAnalysis,
+    getIpInfo,
+} from "../api/virustotalApi";
+import { Bar } from "react-chartjs-2";
+import "chart.js/auto";
+import { ShieldAlert, Globe, Link2 } from "lucide-react";
 
-const HoneyDashboard = () => {
-    const [attacks, setAttacks] = useState([]);
-    const [badHost, setBadHost] = useState([]);
-    const [ setError] = useState('');
+const Dashboard = () => {
+    const [ip, setIp] = useState("8.8.8.8");
+    const [url, setUrl] = useState("https://example.com");
+    const [ipData, setIpData] = useState([]);
+    const [vtStats, setVtStats] = useState(null);
+    const [vtIpInfo, setVtIpInfo] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    useEffect(() => {
-        fetch('http://localhost:5000/api/attacks')
-            .then((res) => res.json())
-            .then((data) => { console.log(data); setAttacks(data) })
-            .catch((err) => setError('Could not load HoneyDB data' + err.message));
+    const handleScan = async () => {
+        setLoading(true);
+        setError("");
+        setVtStats(null);
+        setIpData([]);
+        setVtIpInfo(null);
 
-        fetch('http://localhost:5000/api/badHost')
-            .then((res) => res.json())
-            .then((data) => { console.log(data); setBadHost(data) })
-            .catch((err) => setError('Could not load HoneyDB data' + err.message));
-    }, []);
+        try {
+            const [ipRes, ipInfo] = await Promise.all([
+                fetchIpHistory(ip),
+                getIpInfo(ip),
+            ]);
+            setIpData(ipRes);
+            setVtIpInfo(ipInfo.data);
+
+            const vtSubmit = await submitUrl(url);
+            const analysisId = vtSubmit.data.id;
+
+            setTimeout(async () => {
+                const analysis = await getUrlAnalysis(analysisId);
+                setVtStats(analysis.data.attributes.stats);
+                setLoading(false);
+            }, 5000);
+        } catch (err) {
+            console.error("Error during scan:", err);
+            setError("Failed to fetch data. Please check inputs or try again.");
+            setLoading(false);
+        }
+    };
+
+    const summarizeResults = (results) => {
+        const counts = {};
+        for (const engine in results) {
+            const category = results[engine].category;
+            counts[category] = (counts[category] || 0) + 1;
+        }
+        return counts;
+    };
 
     return (
-        <div className="p-4 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-semibold mb-4 text-center">Service provide by HoneyDB</h2>
-            <div className="overflow-x-auto shadow rounded-lg">
-                <table className="min-w-full bg-white border border-gray-200">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="py-2 px-4 border-b text-left">Remote Host</th>
-                            <th className="py-2 px-4 border-b text-left">Request Count</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {attacks.map((entry, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                                <td className="py-2 px-4 border-b">{entry.service}</td>
-                                <td className="py-2 px-4 border-b">{Number(entry.count).toLocaleString()}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        <div className="p-8 bg-transparent min-h-screen text-gray-800 font-sans">
+            <h1 className="text-4xl font-bold text-center mb-10 text-blue-600">
+                🛡️ Cyber Threat Intelligence Dashboard
+            </h1>
+
+            <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="border border-gray-200 p-6 rounded-2xl shadow-sm bg-transparent">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                        <Globe className="inline mr-1" size={18} /> IP Address (VirusTotal + HoneyDB)
+                    </label>
+                    <input
+                        type="text"
+                        value={ip}
+                        onChange={(e) => setIp(e.target.value)}
+                        className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-800"
+                        placeholder="e.g. 8.8.8.8"
+                    />
+                </div>
+                <div className="border border-gray-200 p-6 rounded-2xl shadow-sm bg-transparent">
+                    <label className="block mb-2 text-sm font-medium text-gray-700">
+                        <Link2 className="inline mr-1" size={18} /> URL to Scan (VirusTotal)
+                    </label>
+                    <input
+                        type="text"
+                        value={url}
+                        onChange={(e) => setUrl(e.target.value)}
+                        className="w-full p-3 bg-white border border-gray-300 rounded-xl text-gray-800"
+                        placeholder="e.g. https://example.com"
+                    />
+                </div>
             </div>
-            <h2 className="text-2xl font-semibold mb-4 text-center">bad hosts by HoneyDB</h2>
-            <div className="overflow-x-auto shadow rounded-lg">
-                <table className="min-w-full bg-white border border-gray-200">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="py-2 px-4 border-b text-left">Remote Host</th>
-                            <th className="py-2 px-4 border-b text-left">Request Count</th>
-                            <th className="py-2 px-4 border-b text-left">Last Seen</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {badHost.slice(0, 20).map((entry, index) => (
-                            <tr key={index} className="hover:bg-gray-50">
-                                <td className="py-2 px-4 border-b">{entry.remote_host}</td>
-                                <td className="py-2 px-4 border-b">{Number(entry.count).toLocaleString()}</td>
-                                <td className="py-2 px-4 border-b">{entry.last_seen}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+
+            <div className="text-center mb-8">
+                <button
+                    onClick={handleScan}
+                    disabled={loading}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition shadow-md"
+                >
+                    {loading ? "Scanning..." : "🚀 Start Analysis"}
+                </button>
             </div>
+
+            {error && <div className="text-red-500 text-center mb-6">{error}</div>}
+
+            <div className="grid md:grid-cols-2 gap-6">
+                {vtIpInfo && (
+                    <div className="border border-gray-200 p-6 rounded-2xl shadow-sm bg-transparent">
+                        <h2 className="text-xl font-semibold mb-4 text-blue-600 flex items-center">
+                            <ShieldAlert className="mr-2" /> IP Threat Intelligence
+                        </h2>
+                        <p className="text-sm text-gray-600 mb-1">🌍 Country: {vtIpInfo.attributes?.country}</p>
+                        <p className="text-sm text-gray-600 mb-4">🏢 ASN: {vtIpInfo.attributes?.as_owner}</p>
+                        <div className="text-sm space-y-1">
+                            {vtIpInfo.attributes?.last_analysis_results && (
+                                <>
+                                    {Object.entries(summarizeResults(vtIpInfo.attributes.last_analysis_results)).map(
+                                        ([category, count]) => (
+                                            <div key={category} className="flex justify-between text-gray-700">
+                                                <span className="capitalize">{category}</span>
+                                                <span className="font-semibold">{count}</span>
+                                            </div>
+                                        )
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {vtStats && (
+                    <div className="border border-gray-200 p-6 rounded-2xl shadow-sm bg-transparent">
+                        <h2 className="text-xl font-semibold mb-4 text-blue-600">🔍 URL Verdict Summary</h2>
+                        <ul className="space-y-2 text-sm">
+                            {Object.entries(vtStats).map(([key, value]) => (
+                                <li key={key} className="flex justify-between border-b border-gray-100 py-1">
+                                    <span className="capitalize text-gray-600">{key}</span>
+                                    <span className="text-gray-900 font-semibold">{value}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
+            {ipData.length > 0 && (
+                <div className="border border-gray-200 mt-10 p-6 rounded-2xl shadow-sm bg-transparent">
+                    <h3 className="text-xl font-semibold mb-4 text-gray-800">📊 SSH Attack Timeline (HoneyDB)</h3>
+                    <Bar
+                        data={{
+                            labels: ipData.map((e) => e.date),
+                            datasets: [
+                                {
+                                    label: "Event Count",
+                                    data: ipData.map((e) => parseInt(e.event_count)),
+                                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                                    borderColor: "rgba(54, 162, 235, 1)",
+                                    borderWidth: 1,
+                                },
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false,
+                                },
+                                title: {
+                                    display: true,
+                                    text: `SSH Events for ${ip}`,
+                                    color: "#333",
+                                    font: {
+                                        size: 18,
+                                    },
+                                },
+                            },
+                            scales: {
+                                x: {
+                                    ticks: {
+                                        color: "#555",
+                                        maxRotation: 60,
+                                        minRotation: 45,
+                                    },
+                                },
+                                y: {
+                                    ticks: {
+                                        color: "#555",
+                                    },
+                                },
+                            },
+                        }}
+                    />
+                </div>
+            )}
         </div>
     );
 };
 
-export default HoneyDashboard;
+export default Dashboard;
