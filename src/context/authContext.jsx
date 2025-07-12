@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
       try {
         const res = await getCurrentUser();
         setUser(res.data);
-      } catch (err) {
+      } catch {
         console.log("User not logged in");
       } finally {
         setLoading(false);
