@@ -8,7 +8,7 @@ export default defineConfig({
     proxy: {
       "/zap": {
 
-        target: "http://127.0.0.1:8080", // ✅ correct ZAP API host
+        target: "http://localhost:8080", // ✅ correct ZAP API host
 
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/zap/, "/JSON"), // ✅ prepends /JSON

@@ -1,6 +1,6 @@
-// scanContext.jsx
+// context/ScanContext.jsx
 import React, { createContext, useContext, useState, useRef, useEffect } from "react";
-import { BASE_URL, API_KEY, isValidUrl } from "../utils/zapApi";
+import { BASE_URL, API_KEY, isValidUrl, getElapsedTime, delay } from "../utils/zapApi";
 
 const ScanContext = createContext();
 
@@ -161,18 +161,6 @@ export function ScanProvider({ children }) {
       return [];
     }
   };
-
-  const getElapsedTime = (startTime) => {
-    const start = new Date(startTime);
-    const now = new Date();
-    const diff = now - start;
-    const seconds = (diff / 1000).toFixed(3);
-    const minutes = Math.floor(seconds / 60);
-    const remSeconds = (seconds % 60).toFixed(3).padStart(6, "0");
-    return `00:${String(minutes).padStart(2, "0")}:${remSeconds}`;
-  };
-
-  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   useEffect(() => {
     return () => {
