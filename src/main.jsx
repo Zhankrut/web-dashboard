@@ -19,8 +19,8 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Home /> },
-      { path: "password-manager", element: <PasswordManager /> },
       { path: "vulnerability-scan", element: <VulnerabilityScan /> },
+      { path: "password-manager", element: <PasswordManager /> },
       { path: "honeypot-monitor", element: <HoneyPotMonitor /> },
       { path: "profile", element: <Profile /> },
       { path: "settings", element: <Settings /> },
