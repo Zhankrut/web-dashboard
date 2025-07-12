@@ -3,6 +3,7 @@ import {
     fetchIpHistory,
     fetchAttacks,
     fetchBadHosts,
+    fetchLookUp,
 } from "../api/honeydbApi";
 import {
     submitUrl,
@@ -12,6 +13,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import "chart.js/auto";
 import { ShieldAlert, Globe, Link2 } from "lucide-react";
+import IpLocationMap from "../component/Map";
 
 const Dashboard = () => {
     const [ip, setIp] = useState("8.8.8.8");
@@ -21,6 +23,7 @@ const Dashboard = () => {
     const [vtIpInfo, setVtIpInfo] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [lookup, setLookup] = useState(null);
 
     const handleScan = async () => {
         setLoading(true);
@@ -30,12 +33,14 @@ const Dashboard = () => {
         setVtIpInfo(null);
 
         try {
-            const [ipRes, ipInfo] = await Promise.all([
+            const [ipRes, ipInfo, ipLookup] = await Promise.all([
                 fetchIpHistory(ip),
                 getIpInfo(ip),
+                fetchLookUp(ip),
             ]);
             setIpData(ipRes);
             setVtIpInfo(ipInfo.data);
+            setLookup(ipLookup);
 
             const vtSubmit = await submitUrl(url);
             const analysisId = vtSubmit.data.id;
@@ -51,7 +56,7 @@ const Dashboard = () => {
             setLoading(false);
         }
     };
-
+    console.log(lookup);
     const summarizeResults = (results) => {
         const counts = {};
         for (const engine in results) {
@@ -148,7 +153,7 @@ const Dashboard = () => {
 
             {ipData.length > 0 && (
                 <div className="border border-gray-200 mt-10 p-6 rounded-2xl shadow-sm bg-transparent">
-                    <h3 className="text-xl font-semibold mb-4 text-gray-800">📊 SSH Attack Timeline (HoneyDB)</h3>
+                    <h3 className="text-xl font-semibold mb-4 text-gray-800">📊 IP (bad host) history (HoneyDB)</h3>
                     <Bar
                         data={{
                             labels: ipData.map((e) => e.date),
@@ -193,6 +198,26 @@ const Dashboard = () => {
                             },
                         }}
                     />
+                </div>
+            )}
+
+            {lookup && (
+                <div className="mt-10 space-y-4">
+                    <h3 className="text-xl font-semibold text-blue-600">🌍 IP Location Map</h3>
+                    <IpLocationMap
+                        latitude={lookup.latitude}
+                        longitude={lookup.longitude}
+                        ip={lookup.ip}
+                        as_name={lookup.as_name}
+                    />
+                    <h3 className="text-xl font-semibold text-blue-600">Ip info </h3>
+                    {lookup && Object.entries(lookup).map(([key, value]) => (
+                        <div key={key} className="flex justify-between border-b py-1 text-sm text-gray-700">
+                            <span className="font-medium capitalize">{key.replace(/_/g, ' ')}</span>
+                            <span>{value !== null ? value.toString() : "N/A"}</span>
+                        </div>
+                    ))}
+
                 </div>
             )}
         </div>

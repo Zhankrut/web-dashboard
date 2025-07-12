@@ -17,3 +17,8 @@ export const fetchIpHistory = async (ip) => {
     const res = await axios.get(`${API_BASE}/ip-history/${ip}`);
     return res.data;
 };
+
+export const fetchLookUp = async (ip) => {
+    const res = await axios.get(`${API_BASE}/netinfo/${ip}`);
+    return res.data;
+}
