@@ -11,15 +11,17 @@ import {
 import pLimit from "p-limit";
 
 export function useScanLogic() {
-  const [targetUrl, setTargetUrl] = useState("");
-  const [scanProgress, setScanProgress] = useState(0);
-  const [alerts, setAlerts] = useState([]);
-  const [sentMessages, setSentMessages] = useState([]);
+  /* ──────────────── state ──────────────── */
+  const [targetUrl, setTargetUrl]         = useState("");
+  const [scanProgress, setScanProgress]   = useState(0);
+  const [alerts, setAlerts]               = useState([]);
+  const [sentMessages, setSentMessages]   = useState([]);
   const [pluginProgressData, setPluginProgressData] = useState([]);
-  const [scanStatus, setScanStatus] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [scanStatus, setScanStatus]       = useState("");
+  const [loading, setLoading]             = useState(false);
   const pollingRef = useRef(true);
 
+  /* ──────────────── controls ──────────────── */
   const startScan = async () => {
     if (!isValidUrl(targetUrl)) {
       toast.error("❌ Please enter a valid URL including http/https.");
@@ -32,6 +34,7 @@ export function useScanLogic() {
     setScanProgress(0);
     setAlerts([]);
     setSentMessages([]);
+    setPluginProgressData([]);
     pollingRef.current = true;
 
     try {
@@ -45,19 +48,16 @@ export function useScanLogic() {
         `${BASE_URL}/ascan/action/scan/?url=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
       );
       const activeData = await activeResp.json();
-
-      if (activeData.scan) {
-        await pollScanStatus(activeData.scan);
-      }
+      if (activeData.scan) await pollScanStatus(activeData.scan);
 
       toast.success(`✅ Scan completed for ${targetUrl}`);
       setScanStatus(`Scan completed for ${targetUrl}`);
-    } catch (error) {
-      toast.error(`❌ Scan failed: ${error.message}`);
-      setScanStatus(`Scan failed: ${error.message}`);
+    } catch (err) {
+      toast.error(`❌ Scan failed: ${err.message}`);
+      setScanStatus(`Scan failed: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   const stopScan = async () => {
@@ -70,19 +70,19 @@ export function useScanLogic() {
       await fetch(`${BASE_URL}/ascan/action/stop/?apikey=${API_KEY}`);
       await fetch(`${BASE_URL}/spider/action/stop/?apikey=${API_KEY}`);
       await fetchAlerts();
-      const msgs = await fetchSentMessages();
-      setSentMessages(msgs);
-    } catch (error) {
-      toast.error(`❌ Failed to stop scan: ${error.message}`);
+      setSentMessages(await fetchSentMessages());
+    } catch (err) {
+      toast.error(`❌ Failed to stop scan: ${err.message}`);
     }
   };
 
+  /* ──────────────── polling helpers ──────────────── */
   const pollSpiderStatus = async (scanId) => {
     let status = "0";
     while (status !== "100" && pollingRef.current) {
       await delay(500);
-      const resp = await fetch(`${BASE_URL}/spider/view/status/?scanId=${scanId}&apikey=${API_KEY}`);
-      status = (await resp.json()).status;
+      status = (await fetch(`${BASE_URL}/spider/view/status/?scanId=${scanId}&apikey=${API_KEY}`)
+        .then(r => r.json())).status;
     }
   };
 
@@ -90,88 +90,90 @@ export function useScanLogic() {
     let status = "0";
     while (status !== "100" && pollingRef.current) {
       await delay(1000);
+
       const [{ status: s }, plugins, msgs] = await Promise.all([
-        fetch(`${BASE_URL}/ascan/view/status/?scanId=${scanId}&apikey=${API_KEY}`).then((r) => r.json()),
-        fetchPluginProgress(),
+        fetch(`${BASE_URL}/ascan/view/status/?scanId=${scanId}&apikey=${API_KEY}`).then(r => r.json()),
+        fetchPluginProgress(scanId),
         fetchSentMessages(),
       ]);
-      status = s;
-      setScanProgress(Number(status));
+
+      status && setScanProgress(Number(s));
       setPluginProgressData(plugins);
       setSentMessages(msgs);
+
+      console.log("📊 Plugin progress:", plugins.length, "rows");
+      console.log("📬 Sent messages:", msgs.length);
     }
 
     if (pollingRef.current) {
       setScanProgress(100);
       await fetchAlerts();
-      const msgs = await fetchSentMessages();
-      setSentMessages(msgs);
+      setSentMessages(await fetchSentMessages());
     }
   };
 
+  /* ──────────────── fetch helpers ──────────────── */
   const fetchAlerts = async () => {
     try {
-      const resp = await fetch(`${BASE_URL}/core/view/alerts/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
-      const data = await resp.json();
+      const data = await fetch(
+        `${BASE_URL}/core/view/alerts/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
+      ).then(r => r.json());
       setAlerts(data.alerts || []);
       setScanStatus(`Found ${data.alerts?.length || 0} alerts.`);
-      return data.alerts || [];
-    } catch (error) {
-      setScanStatus(`Error fetching alerts: ${error.message}`);
-      return [];
+    } catch (err) {
+      setScanStatus(`Error fetching alerts: ${err.message}`);
     }
   };
 
-  const fetchPluginProgress = async () => {
+  const fetchPluginProgress = async (scanId) => {
     try {
-      const response = await fetch(`${BASE_URL}/ascan/view/scanners/?apikey=${API_KEY}`);
-      const json = await response.json();
-      return (json.scanners || []).map((scanner) => ({
-        id: scanner.id,
-        name: scanner.name,
-        strength: scanner.attackStrength || "-",
-        progress: parseInt(scanner.progress, 10),
-        elapsed: scanner.timeStarted ? getElapsedTime(scanner.timeStarted) : "-",
-        requests: scanner.requests || 0,
-        alerts: scanner.alertsRaised || 0,
-        status: scanner.progress >= 100 ? "✅ Done" : "⏳ Running",
+      const json = await fetch(
+        `${BASE_URL}/ascan/view/scanners/?scanId=${scanId}&apikey=${API_KEY}`
+      ).then(r => r.json());
+
+      return (json.scanners || []).map(s => ({
+        id: s.id,
+        name: s.name,
+        progress: Number(s.progress),
+        strength: s.attackStrength || "-",
+        elapsed: s.timeStarted ? getElapsedTime(s.timeStarted) : "-",
+        requests: s.requests || 0,
+        alerts: s.alertsRaised || 0,
+        state: s.progress === "100" ? "Done" : "Running",
       }));
-    } catch {
+    } catch (err) {
+      console.error("Plugin progress fetch error:", err);
       return [];
     }
   };
 
-  const fetchSentMessages = async (concurrency = 20) => {
+  const fetchSentMessages = async (concurrency = 8) => {
     try {
-      const resp = await fetch(`${BASE_URL}/core/view/messages/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`);
-      const data = await resp.json();
-      const messages = data.messages || [];
+      const idsRes = await fetch(
+        `${BASE_URL}/core/view/messages/?baseurl=${encodeURIComponent(targetUrl)}&apikey=${API_KEY}`
+      ).then(r => r.json());
+
+      const ids = idsRes.messages || [];
       const limit = pLimit(concurrency);
-      return Promise.all(messages.map((msg) =>
+
+      return Promise.all(ids.map(msg =>
         limit(async () => {
           try {
-            const r = await fetch(`${BASE_URL}/core/view/message/?id=${msg.id}&apikey=${API_KEY}`).then((x) => x.json());
+            const r = await fetch(`${BASE_URL}/core/view/message/?id=${msg.id}&apikey=${API_KEY}`)
+              .then(x => x.json());
             const hdr = r.message.requestHeader || "";
-            const method = hdr.split(" ")[0] || "-";
-            const url = hdr.split(" ")[1] || "-";
-            const statusCode = r.message.responseHeader?.match(/HTTP\/\d\.\d (\d{3})/)?.[1] || "-";
-            const reasonPhrase = r.message.responseHeader?.match(/HTTP\/\d\.\d \d{3} (.+)/)?.[1] || "-";
+            const [method, url] = hdr.split(" ");
+            const match = r.message.responseHeader?.match(/HTTP\/\d\.\d (\d{3}) (.+)/) || [];
             return {
               id: msg.id,
               timeSent: r.message.timeSent,
-              timeReceived: r.message.timeReceived,
+              rtt: r.message.rtt,
               method,
               url,
-              statusCode,
-              reasonPhrase,
-              rtt: r.message.rtt,
-              responseHeader: r.message.responseHeader,
-              responseBody: r.message.responseBody,
+              statusCode: match[1] || "-",
+              reasonPhrase: match[2] || "-",
             };
-          } catch (err) {
-            console.error("Message fetch error:", err);
-            return { id: msg.id };
-          }
+          } catch { return { id: msg.id }; }
         })
       ));
     } catch (err) {
@@ -180,15 +182,12 @@ export function useScanLogic() {
     }
   };
 
-  useEffect(() => {
-    return () => {
-      pollingRef.current = false;
-    };
-  }, []);
+  /* ──────────────── cleanup ──────────────── */
+  useEffect(() => () => { pollingRef.current = false; }, []);
 
+  /* ──────────────── public api ──────────────── */
   return {
-    targetUrl,
-    setTargetUrl,
+    targetUrl, setTargetUrl,
     scanProgress,
     alerts,
     sentMessages,

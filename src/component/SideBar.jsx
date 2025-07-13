@@ -1,5 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import logoLottie from "../assets/Images/Logo.lottie";
 
 function SideBar() {
   return (
@@ -10,15 +12,19 @@ function SideBar() {
         color: "#3e67c8",
       }}
     >
-      <div className="py-3 text-center border-b-2 border-gray-200">
-        <NavLink to="/">
-          <img
-            src="src/assets/images/logo.png"
-            alt="Logo"
-            className="mx-auto h-auto w-20"
-          />
-        </NavLink>
-      </div>
+<div className="py-3 text-center border-b-2 border-gray-200 ">
+  <NavLink to="/">
+    <div className="mx-auto w-25 h-25 rounded-2xl shadow-2xl z-10 pointer-events-none"> {/* Slightly smaller size */}
+      <DotLottieReact
+        src={logoLottie}
+        autoplay
+        loop
+        style={{ width: "100%", height: "100%" }}
+      />
+    </div>
+  </NavLink>
+</div>
+
 
       <nav className="text-sm h-full text-[#3e67c8]">
         <ul className="flex flex-col">
@@ -30,7 +36,6 @@ function SideBar() {
               to="/"
             >
               <span className="py-3 flex items-center">
-                {/* Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -62,8 +67,6 @@ function SideBar() {
               to="/vulnerability-scan"
             >
               <span className="py-3 flex items-center">
-                {/* Icon */}
-                {/* ... keep SVG unchanged */}
                 Vulnerability Scan
               </span>
             </NavLink>
@@ -77,8 +80,6 @@ function SideBar() {
               to="/honeypot-monitor"
             >
               <span className="px-4 py-3 flex items-center">
-                {/* Icon */}
-                {/* ... keep SVG unchanged */}
                 Honeypot Monitoring
               </span>
             </NavLink>
@@ -92,14 +93,13 @@ function SideBar() {
               to="/password-manager"
             >
               <span className="py-3 flex items-center">
-                {/* Icon */}
-                {/* ... keep SVG unchanged */}
                 Password Manager
               </span>
             </NavLink>
           </li>
         </ul>
       </nav>
+
       <div className="mt-auto">
         <div className="px-4 py-2 text-xs uppercase tracking-wider font-bold text-[#3e67c8]">
           Profile & Settings
@@ -114,8 +114,6 @@ function SideBar() {
                 to="/profile"
               >
                 <span className="py-3 flex items-center">
-                  {/* Icon */}
-                  {/* ... keep SVG unchanged */}
                   Profile
                 </span>
               </NavLink>
@@ -129,8 +127,6 @@ function SideBar() {
                 to="/settings"
               >
                 <span className="py-3 flex items-center">
-                  {/* Icon */}
-                  {/* ... keep SVG unchanged */}
                   Settings
                 </span>
               </NavLink>
