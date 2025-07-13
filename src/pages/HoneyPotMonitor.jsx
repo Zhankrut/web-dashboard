@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import {
     fetchIpHistory,
-    fetchAttacks,
-    fetchBadHosts,
     fetchLookUp,
 } from "../api/honeydbApi";
 import {
@@ -69,7 +67,7 @@ const Dashboard = () => {
     return (
         <div className="p-8 bg-transparent min-h-screen text-gray-800 font-sans">
             <h1 className="text-4xl font-bold text-center mb-10 text-blue-600">
-                🛡️ Cyber Threat Intelligence Dashboard
+                🛡️ Cyber Threat Intelligence
             </h1>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
